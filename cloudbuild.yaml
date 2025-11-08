@@ -1,9 +1,9 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/dt-settings-cleanup-job', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/wolfgangB33r/dt-settings-cleanup-job', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/dt-settings-cleanup-job']
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/wolfgangB33r/dt-settings-cleanup-job']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
@@ -13,7 +13,7 @@ steps:
       - 'create'
       - 'dt-settings-cleanup-job'
       - '--image'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/dt-settings-cleanup-job'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/wolfgangB33r/dt-settings-cleanup-job'
       - '--region'
       - 'us-central1'
       - '--no-traffic'
