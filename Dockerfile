@@ -6,18 +6,15 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Install the project into /app
 COPY . /app
+# Use a small Python image
+FROM python:3.12-slim
+
+# Copy your app
+COPY app.py /app/app.py
 WORKDIR /app
 
-# Allow statements and log messages to immediately appear in the logs
-ENV PYTHONUNBUFFERED=1
+# Expose port (for local clarity — Cloud Run sets this automatically)
+EXPOSE 8080
 
-# Copy requirements if you have one, else skip this step
-COPY requirements.txt ./
-
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-EXPOSE $PORT
-
-# Run the job
-CMD ["uv", "run", "app.py"]
+# Run the server
+CMD ["python", "app.py"]
