@@ -45,15 +45,8 @@ def cleanup():
         else:
             print("Http error: %d" % (r.status_code))
 
-# Start a simple webserver to receive a http request to trigger the job
-class Handler(http.server.SimpleHTTPRequestHandler) :
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/plain")
-        self.end_headers()
-        #cleanup()
-        self.wfile.write(b"Finished cleanup service")
+cleanup()
+        
 
-if __name__ == "__main__":
-    s = http.server.HTTPServer( ('', 8080), Handler )
-    s.serve_forever()
+
+
