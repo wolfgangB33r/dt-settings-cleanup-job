@@ -4,6 +4,7 @@ Example script cleaning up given Settings 2.0 namespaces after a configurable pe
 import requests, datetime
 from datetime import datetime
 import os
+from http.server import BaseHTTPRequestHandler, HTTPServer
 # the number of days a setting entry is kept until its deleted and cleaned up again
 KEEP_PERIOD_DAYS = int(os.environ.get('KEEP_PERIOD_DAYS', '14'))
 
@@ -23,6 +24,9 @@ def check(items):
                 print("Successfully removed settings object with id: %s" % (item['objectId']))
         
 def cleanup():
+    if not YOUR_DT_API_URL or not YOUR_DT_API_TOKEN or not NAMESPACES:
+        print("Please set the necessary environment variables: KEEP_PERIOD_DAYS, DYNATRACE_API_TOKEN, DYNATRACE_ENVIRONMENT_URL, SETTINGS_SCHEMAS")
+        exit(1)
     for ns in NAMESPACES:
         print("Start cleaning up namespace: %s" % (ns))
         count = 0
@@ -41,11 +45,7 @@ def cleanup():
         else:
             print("Http error: %d" % (r.status_code))
 
-
-
 # Start a simple webserver to receive a http request to trigger the job
-from http.server import BaseHTTPRequestHandler, HTTPServer
-
 class SimpleHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         print("Received request, responding with hello world")
@@ -55,14 +55,8 @@ class SimpleHandler(BaseHTTPRequestHandler):
         #cleanup()
         self.wfile.write(b"Finished cleanup service")
 
-PORT = 8080
-with HTTPServer(("0.0.0.0", PORT), SimpleHandler) as server:
-    print(f"Serving on port {PORT}")
-    server.serve_forever()
-
-if not YOUR_DT_API_URL or not YOUR_DT_API_TOKEN or not NAMESPACES:
-    print("Please set the necessary environment variables: KEEP_PERIOD_DAYS, DYNATRACE_API_TOKEN, DYNATRACE_ENVIRONMENT_URL, SETTINGS_SCHEMAS")
-    exit(1)
-
-
-
+if __name__ == "__main__":
+    PORT = 8080
+    with HTTPServer(("0.0.0.0", PORT), SimpleHandler) as server:
+        print(f"Serving on port {PORT}")
+        server.serve_forever()
