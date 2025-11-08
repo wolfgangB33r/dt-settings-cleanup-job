@@ -5,16 +5,23 @@ FROM python:3.13-slim
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Install the project into /app
-# Use a small Python image
-FROM python:3.12-slim
+# Use an official Python runtime as a parent image
+FROM python:3.10-slim
 
-# Copy your app
-COPY server.py /app/server.py
+# Set the working directory in the container
 WORKDIR /app
 
-# Expose port (for local clarity — Cloud Run sets this automatically)
+# Copy the requirements file into the container at /usr/src/app/
+COPY requirements.txt ./
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the current directory contents into the container at /
+COPY . /app
+
+# Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-# Run the server
+# Run app.py when the container launches
 CMD ["python", "server.py"]
-

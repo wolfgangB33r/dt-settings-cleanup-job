@@ -4,7 +4,7 @@ Example script cleaning up given Settings 2.0 namespaces after a configurable pe
 import requests, datetime
 from datetime import datetime
 import os
-from http.server import BaseHTTPRequestHandler, HTTPServer
+import http.server
 # the number of days a setting entry is kept until its deleted and cleaned up again
 KEEP_PERIOD_DAYS = int(os.environ.get('KEEP_PERIOD_DAYS', '14'))
 
@@ -46,7 +46,7 @@ def cleanup():
             print("Http error: %d" % (r.status_code))
 
 # Start a simple webserver to receive a http request to trigger the job
-class SimpleHandler(BaseHTTPRequestHandler):
+class Handler(http.server.SimpleHTTPRequestHandler) :
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-type", "text/plain")
@@ -55,7 +55,5 @@ class SimpleHandler(BaseHTTPRequestHandler):
         self.wfile.write(b"Finished cleanup service")
 
 if __name__ == "__main__":
-    PORT = int(os.environ.get("PORT", 8080))  # Cloud Run sets this env var
-    server = HTTPServer(("0.0.0.0", PORT), SimpleHandler)
-    print(f"Serving on port {PORT}")
-    server.serve_forever()
+    s = http.server.HTTPServer( ('', 8080), Handler )
+    s.serve_forever()
