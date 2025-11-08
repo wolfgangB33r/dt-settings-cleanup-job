@@ -1,0 +1,22 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/${REPO_NAME}', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/${REPO_NAME}']
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'jobs'
+      - 'create'
+      - 'dt-settings-cleanup-job'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/${REPO_NAME}'
+      - '--region'
+      - 'us-central1'
+      - '--no-traffic'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
