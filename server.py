@@ -48,7 +48,6 @@ def cleanup():
 # Start a simple webserver to receive a http request to trigger the job
 class SimpleHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        print("Received request, responding with hello world")
         self.send_response(200)
         self.send_header("Content-type", "text/plain")
         self.end_headers()
@@ -57,6 +56,6 @@ class SimpleHandler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     PORT = int(os.environ.get("PORT", 8080))  # Cloud Run sets this env var
-    with HTTPServer(("0.0.0.0", PORT), SimpleHandler) as server:
-        print(f"Serving on port {PORT}")
-        server.serve_forever()
+    server = HTTPServer(("0.0.0.0", PORT), SimpleHandler)
+    print(f"Serving on port {PORT}")
+    server.serve_forever()
