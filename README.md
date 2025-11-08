@@ -20,3 +20,6 @@ In order to use this job, following settings need to be set as environment varia
 - DYNATRACE_API_TOKEN: An API token secret that has the permission (settings.read, settings.write) to read and write your configured settings schemas.
 - DYNATRACE_ENVIRONMENT_URL: The domain of your Dynatrace environment e.g.: http://abc234112.live.dynatrace.com
 - SETTINGS_SCHEMAS: Comma separated list of settings schemas to cleanup e.g.: builtin:anomaly-detection.metric-events,builtin:alerting.profile,builtin:alerting.maintenance-window,builtin:problem.notifications,builtin:infrastructure.disk.edge.anomaly-detectors,builtin:davis.anomaly-detectors
+
+
+
