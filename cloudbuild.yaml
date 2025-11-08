@@ -1,22 +1,28 @@
+# cloudbuild.yaml
 steps:
+  # Step 1: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/${REPO_NAME}', '.']
+    args: [
+      'build',
+      '-t', 'gcr.io/$PROJECT_ID/my-app:${SHORT_SHA}',  # Tag the image with commit SHA
+      '.'  # Build context (root of your repo)
+    ]
 
+  # Step 2 (Optional): Push the Docker image to Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/${REPO_NAME}']
+    args: [
+      'push',
+      'gcr.io/$PROJECT_ID/my-app:${SHORT_SHA}'
+    ]
 
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'gcloud'
-    args:
-      - 'run'
-      - 'jobs'
-      - 'create'
-      - 'dt-settings-cleanup-job'
-      - '--image'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/${REPO_NAME}'
-      - '--region'
-      - 'us-central1'
-      - '--no-traffic'
+# Optional: Set images to make them appear in Google Cloud Build UI
+images:
+  - 'gcr.io/$PROJECT_ID/my-app:${SHORT_SHA}'
+
+# Optional substitutions
+substitutions:
+  _TAG: 'latest'  # You can override this when triggering builds
+
 
 options:
   logging: CLOUD_LOGGING_ONLY
