@@ -56,7 +56,7 @@ class SimpleHandler(BaseHTTPRequestHandler):
         self.wfile.write(b"Finished cleanup service")
 
 if __name__ == "__main__":
-    PORT = 8080
+    PORT = int(os.environ.get("PORT", 8080))  # Cloud Run sets this env var
     with HTTPServer(("0.0.0.0", PORT), SimpleHandler) as server:
         print(f"Serving on port {PORT}")
         server.serve_forever()
