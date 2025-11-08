@@ -4,7 +4,7 @@ Example script cleaning up given Settings 2.0 namespaces after a configurable pe
 import requests, datetime
 from datetime import datetime
 import os
-import http.server
+import sys
 # the number of days a setting entry is kept until its deleted and cleaned up again
 KEEP_PERIOD_DAYS = int(os.environ.get('KEEP_PERIOD_DAYS', '14'))
 
@@ -46,6 +46,9 @@ def cleanup():
             print("Http error: %d" % (r.status_code))
 
 cleanup()
+
+# Exit with code 0
+sys.exit(0)
         
 
 
