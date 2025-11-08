@@ -1,28 +1,30 @@
 # cloudbuild.yaml
-steps:
-  # Step 1: Build the Docker image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'build',
-      '-t', 'gcr.io/$PROJECT_ID/my-app:${SHORT_SHA}',  # Tag the image with commit SHA
-      '.'  # Build context (root of your repo)
-    ]
-
-  # Step 2 (Optional): Push the Docker image to Google Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'push',
-      'gcr.io/$PROJECT_ID/my-app:${SHORT_SHA}'
-    ]
-
-# Optional: Set images to make them appear in Google Cloud Build UI
-images:
-  - 'gcr.io/$PROJECT_ID/my-app:${SHORT_SHA}'
-
-# Optional substitutions
 substitutions:
-  _TAG: 'latest'  # You can override this when triggering builds
+  _REGION: "us-central1"  # Artifact Registry & Cloud Run region
+  _REPOSITORY: "wolfgangB33r/dt-settings-cleanup-job"  # Artifact Registry repository name
+  _JOB: "dt-settings-cleanup-job"          # Cloud Run Job name
 
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_JOB}:${SHORT_SHA}',
+        '.'
+      ]
 
+  # Step 2: Push Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_JOB}:${SHORT_SHA}'
+      ]
+
+images:
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_JOB}:${SHORT_SHA}'
+
+# Cloud logs settings
 options:
   logging: CLOUD_LOGGING_ONLY
