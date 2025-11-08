@@ -56,7 +56,7 @@ class SimpleHandler(BaseHTTPRequestHandler):
         self.wfile.write(b"Finished cleanup service")
 
 PORT = 8080
-with HTTPServer(("localhost", PORT), SimpleHandler) as server:
+with HTTPServer(("0.0.0.0", PORT), SimpleHandler) as server:
     print(f"Serving on port {PORT}")
     server.serve_forever()
 
