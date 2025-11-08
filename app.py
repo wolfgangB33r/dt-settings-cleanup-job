@@ -44,3 +44,19 @@ for ns in NAMESPACES:
                 break
     else:
         print("Http error: %d" % (r.status_code))
+
+# Start a simple webserver to receive a http request to trigger the job
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+class SimpleHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        print("Received request, responding with hello world")
+        self.send_response(200)
+        self.send_header("Content-type", "text/plain")
+        self.end_headers()
+        self.wfile.write(b"Cleanup service")
+
+PORT = 8080
+with HTTPServer(("127.0.0.1", PORT), SimpleHandler) as server:
+    print(f"Serving on port {PORT}")
+    server.serve_forever()
