@@ -1,6 +1,6 @@
 # cloudbuild.yaml
 substitutions:
-  _REGION: "europe-west1"  # Artifact Registry & Cloud Run region
+  _REGION: "us-central1"  # Artifact Registry & Cloud Run region
   _REPOSITORY: "wolfgangB33r/dt-settings-cleanup-job"  # Artifact Registry repository name
   _JOB: "dt-settings-cleanup-job"          # Cloud Run Job name
 
